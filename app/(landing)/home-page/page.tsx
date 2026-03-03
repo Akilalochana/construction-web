@@ -1,29 +1,66 @@
-import { motion } from 'framer-motion'
+"use client";
+import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from 'react'
+
+const slides = [
+  { src: "/assets/hero.jpg", alt: "Construction site at golden hour" },
+  { src: "/assets/modern-villa.jpg", alt: "Modern villa exterior" },
+  { src: "/assets/apartment.jpg", alt: "Luxury apartment interior" },
+];
 
 function page() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slides.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
      <section
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background */}
+      {/* Background Slideshow */}
       <div className="absolute inset-0">
-        <motion.img
-          src="/assets/hero.jpg"
-          alt="Modern house under construction at golden hour"
-          className="w-full h-full object-cover"
-          loading="eager"
-          initial={{ scale: 1.15 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.8, ease: "easeOut" }}
-        />
-        <div className="absolute inset-0 bg-primary/70" />
+        <AnimatePresence mode="sync">
+          <motion.img
+            key={current}
+            src={slides[current].src}
+            alt={slides[current].alt}
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
+            initial={{ opacity: 0, scale: 1.08 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+          />
+        </AnimatePresence>
+        <div className="absolute inset-0 bg-primary/70 z-10" />
+      </div>
+
+      {/* Slide indicator dots */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            aria-label={`Go to slide ${i + 1}`}
+            className={`transition-all duration-300 rounded-full ${
+              i === current
+                ? "w-6 h-2 bg-accent"
+                : "w-2 h-2 bg-primary-foreground/40 hover:bg-primary-foreground/70"
+            }`}
+          />
+        ))}
       </div>
 
       {/* Content */}
       <div className="relative z-10 container mx-auto text-center px-4">
         <motion.p
-          className="text-accent font-semibold tracking-widest uppercase text-sm mb-4 bg-amber-500"
+          className="text-accent font-semibold tracking-widest uppercase text-sm mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}

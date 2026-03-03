@@ -6,7 +6,6 @@ const navLinks = [
   { label: "Home", href: "#home" },
   { label: "Services", href: "#services" },
   { label: "Portfolio", href: "#portfolio" },
-  { label: "3D Preview", href: "#3d-preview" },
   { label: "Walkthrough", href: "#walkthrough" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
@@ -34,7 +33,7 @@ function navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <div className="container mx-auto flex items-center justify-between py-4">
+      <div className="container mx-auto flex items-center justify-between py-4 px-6">
         <a href="#home" className="font-heading text-2xl font-bold text-primary-foreground">
           BUILD<span className="text-accent">CRAFT</span>
         </a>
