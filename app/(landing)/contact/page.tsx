@@ -75,7 +75,7 @@ const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" }
             />
             <motion.button
               type="submit"
-              className="bg-accent text-accent-foreground px-8 py-3 rounded-md font-semibold hover:brightness-110 transition flex items-center gap-2"
+              className="w-full sm:w-auto bg-accent text-accent-foreground px-8 py-3 rounded-md font-semibold hover:brightness-110 transition flex items-center justify-center gap-2"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
             >

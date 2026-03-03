@@ -9,48 +9,71 @@ import {
   View,
   Users,
   Star,
+  Wrench,
+  Settings,
   Menu,
   X,
   ChevronRight,
   LogOut,
   Bell,
-  Settings,
   ExternalLink,
 } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
+  { href: "/admin/services", label: "Services", icon: Wrench },
   { href: "/admin/before-after", label: "Before & After", icon: ImageIcon },
   { href: "/admin/walkthrough", label: "360° Walkthrough", icon: View },
   { href: "/admin/team", label: "Team", icon: Users },
   { href: "/admin/reviews", label: "Reviews", icon: Star },
+  { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const pathname = usePathname();
+
+  const showLabels = sidebarOpen || mobileSidebarOpen;
 
   return (
     <div className="min-h-screen bg-[hsl(220,25%,97%)] flex">
 
+      {/* Mobile backdrop */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 md:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full z-40 bg-[hsl(220,60%,12%)] flex flex-col transition-all duration-300 ${
-          sidebarOpen ? "w-64" : "w-16"
-        }`}
+        className={`fixed top-0 left-0 h-full z-40 bg-[hsl(220,60%,12%)] flex flex-col transition-all duration-300
+          w-64
+          ${sidebarOpen ? "md:w-64" : "md:w-16"}
+          ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        `}
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-5 border-b border-white/10">
           <div className="w-9 h-9 bg-accent rounded-lg flex items-center justify-center shrink-0">
             <span className="font-heading font-bold text-accent-foreground text-sm">BC</span>
           </div>
-          {sidebarOpen && (
-            <div>
+          {showLabels && (
+            <div className="flex-1 min-w-0">
               <p className="font-heading font-bold text-white text-sm leading-none">BuildCraft</p>
               <p className="text-white/40 text-xs mt-0.5">Admin Panel</p>
             </div>
           )}
+          {/* Mobile close button */}
+          <button
+            className="ml-auto md:hidden text-white/50 hover:text-white"
+            onClick={() => setMobileSidebarOpen(false)}
+          >
+            <X size={18} />
+          </button>
         </div>
 
         {/* Nav */}
@@ -68,7 +91,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 }`}
               >
                 <item.icon size={18} className="shrink-0" />
-                {sidebarOpen && (
+                {showLabels && (
                   <>
                     <span className="text-sm font-medium flex-1">{item.label}</span>
                     {isActive && <ChevronRight size={14} />}
@@ -86,27 +109,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/50 hover:bg-white/10 hover:text-white transition-all"
           >
             <ExternalLink size={18} className="shrink-0" />
-            {sidebarOpen && <span className="text-sm font-medium">View Site</span>}
+            {showLabels && <span className="text-sm font-medium">View Site</span>}
           </Link>
           <button
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/50 hover:bg-red-500/20 hover:text-red-400 transition-all"
           >
             <LogOut size={18} className="shrink-0" />
-            {sidebarOpen && <span className="text-sm font-medium">Logout</span>}
+            {showLabels && <span className="text-sm font-medium">Logout</span>}
           </button>
         </div>
       </aside>
 
       {/* Main */}
-      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? "ml-64" : "ml-16"}`}>
+      <div className={`flex-1 flex flex-col transition-all duration-300 ml-0 ${sidebarOpen ? "md:ml-64" : "md:ml-16"}`}>
 
         {/* Top bar */}
         <header className="h-16 bg-white border-b border-border flex items-center gap-4 px-6 sticky top-0 z-30">
           <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                setMobileSidebarOpen(!mobileSidebarOpen);
+              } else {
+                setSidebarOpen(!sidebarOpen);
+              }
+            }}
             className="w-9 h-9 rounded-lg hover:bg-secondary flex items-center justify-center transition-colors text-muted-foreground"
           >
-            {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+            <Menu size={18} />
           </button>
 
           {/* Breadcrumb */}

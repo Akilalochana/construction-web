@@ -247,7 +247,7 @@ export default function WalkthroughPage() {
           </Suspense>
 
           {/* Room info */}
-          <div className="absolute top-4 left-4 z-20">
+          <div className="absolute top-4 left-4 z-20 max-w-[160px] sm:max-w-xs">
             <motion.div
               key={room.id}
               initial={{ opacity: 0, x: -20 }}
@@ -276,7 +276,7 @@ export default function WalkthroughPage() {
           </button>
 
           {/* Room pills */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 max-w-[90vw] overflow-x-auto px-2 scrollbar-none">
             {ROOMS.map((r, i) => (
               <button
                 key={r.id}
@@ -292,7 +292,7 @@ export default function WalkthroughPage() {
             ))}
           </div>
 
-          <div className="absolute bottom-14 left-1/2 -translate-x-1/2 z-20 bg-foreground/40 backdrop-blur-sm text-primary-foreground text-[11px] px-3 py-1 rounded-full">
+          <div className="absolute bottom-14 left-1/2 -translate-x-1/2 z-20 bg-foreground/40 backdrop-blur-sm text-primary-foreground text-[10px] sm:text-[11px] px-3 py-1 rounded-full whitespace-nowrap">
             Drag to look around in 360°
           </div>
         </motion.div>

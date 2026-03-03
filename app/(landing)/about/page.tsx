@@ -42,12 +42,12 @@ function page() {
     <section id="about" className="bg-white">
 
       {/* ── HERO SPLIT ─────────────────────────────────────── */}
-      <div className="container mx-auto px-6 pt-24 pb-20">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div className="container mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-12 sm:pb-20">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
           {/* Left — Photo collage */}
           <motion.div
-            className="relative h-[520px]"
+            className="relative h-[260px] sm:h-[380px] lg:h-[520px]"
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -61,30 +61,30 @@ function page() {
             <div className="absolute bottom-0 right-0 w-[52%] h-[52%] rounded-2xl overflow-hidden shadow-xl border-4 border-white">
               <Image src="/assets/apartment1.jpg" alt="Apartment" fill className="object-cover" />
             </div>
-            {/* Floating stat badge */}
+            {/* Floating stat badge — hidden on very small screens */}
             <motion.div
-              className="absolute top-6 right-0 bg-white rounded-xl shadow-lg px-5 py-4 border border-border"
+              className="absolute top-4 right-0 bg-white rounded-xl shadow-lg px-3 sm:px-5 py-2 sm:py-4 border border-border hidden sm:block"
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5, duration: 0.4 }}
             >
-              <div className="font-heading text-3xl font-bold text-primary">15+</div>
+              <div className="font-heading text-2xl sm:text-3xl font-bold text-primary">15+</div>
               <div className="text-muted-foreground text-xs mt-0.5">Years of Excellence</div>
             </motion.div>
-            {/* Floating stat badge 2 */}
+            {/* Floating stat badge 2 — hidden on small screens */}
             <motion.div
-              className="absolute bottom-[54%] left-[68%] bg-accent rounded-xl shadow-lg px-5 py-4"
+              className="absolute bottom-[54%] left-[68%] bg-accent rounded-xl shadow-lg px-3 sm:px-5 py-2 sm:py-4 hidden sm:block"
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.65, duration: 0.4 }}
             >
-              <div className="font-heading text-3xl font-bold text-accent-foreground">200+</div>
+              <div className="font-heading text-2xl sm:text-3xl font-bold text-accent-foreground">200+</div>
               <div className="text-accent-foreground/80 text-xs mt-0.5">Projects Delivered</div>
             </motion.div>
             {/* Accent dot */}
-            <div className="absolute top-[42%] left-[70%] w-4 h-4 rounded-full bg-accent opacity-80" />
+            <div className="absolute top-[42%] left-[70%] w-4 h-4 rounded-full bg-accent opacity-80 hidden sm:block" />
           </motion.div>
 
           {/* Right — Content */}
@@ -97,7 +97,7 @@ function page() {
             <p className="text-accent font-semibold tracking-widest uppercase text-sm mb-3">
               Who We Are
             </p>
-            <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground leading-tight mb-6">
+            <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground leading-tight mb-6">
               Building Dreams <br />
               <span className="text-accent">Since 2009</span>
             </h2>
@@ -166,16 +166,16 @@ function page() {
       </div>
 
       {/* ── CEO QUOTE ──────────────────────────────────────── */}
-      <div className="container mx-auto px-6 py-20">
+      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
         <motion.div
-          className="grid lg:grid-cols-5 gap-8 items-center bg-white rounded-3xl overflow-hidden shadow-md border border-border"
+          className="grid lg:grid-cols-5 gap-6 lg:gap-8 items-center bg-white rounded-3xl overflow-hidden shadow-md border border-border"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
           {/* Photo side */}
-          <div className="lg:col-span-2 relative h-64 lg:h-full min-h-[280px]">
+          <div className="lg:col-span-2 relative h-48 sm:h-64 lg:h-full min-h-[220px] lg:min-h-[280px]">
             <Image src="/assets/hero.jpg" alt="CEO" fill className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/10 lg:to-white hidden lg:block" />
           </div>

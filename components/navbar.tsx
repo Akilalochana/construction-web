@@ -35,7 +35,7 @@ function navbar() {
     >
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
         <a href="#home" className="font-heading text-2xl font-bold text-primary-foreground">
-          BUILD<span className="text-accent">CRAFT</span>
+          Sri Ranjana<span className="text-accent"> Construction</span>
         </a>
 
         {/* Desktop */}

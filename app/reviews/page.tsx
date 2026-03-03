@@ -158,7 +158,7 @@ export default function ReviewsPage() {
     <div className="min-h-screen bg-white">
 
       {/* Hero Header */}
-      <div className="bg-primary py-20 px-6 relative overflow-hidden">
+      <div className="bg-primary py-14 sm:py-20 px-4 sm:px-6 relative overflow-hidden">
         <div className="absolute inset-0">
           <Image src="/assets/apartment.jpg" alt="Reviews" fill className="object-cover opacity-15" />
         </div>
@@ -182,7 +182,7 @@ export default function ReviewsPage() {
               transition={{ duration: 0.6 }}
             >
               <p className="text-accent font-semibold tracking-widest uppercase text-sm mb-3">Client Reviews</p>
-              <h1 className="font-heading text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
+              <h1 className="font-heading text-3xl sm:text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
                 What Our Clients Say
               </h1>
               <p className="text-primary-foreground/70 text-lg">
@@ -192,7 +192,7 @@ export default function ReviewsPage() {
 
             {/* Right — Rating summary */}
             <motion.div
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-7 border border-white/20"
+              className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 sm:p-7 border border-white/20"
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -370,10 +370,10 @@ export default function ReviewsPage() {
       </div>
 
       {/* Leave a Review CTA */}
-      <div className="bg-[hsl(215,20%,97%)] py-20 px-6">
+      <div className="bg-[hsl(215,20%,97%)] py-14 sm:py-20 px-4 sm:px-6">
         <div className="container mx-auto">
           <motion.div
-            className="grid md:grid-cols-2 gap-8 items-center bg-white rounded-3xl p-10 shadow-md border border-border"
+            className="grid md:grid-cols-2 gap-6 sm:gap-8 items-center bg-white rounded-3xl p-6 sm:p-10 shadow-md border border-border"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

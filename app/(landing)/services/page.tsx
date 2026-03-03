@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { Home, Wrench, ClipboardCheck, Ruler, HardHat, Paintbrush, ArrowUpRight, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const services = [
   {
@@ -11,7 +12,8 @@ const services = [
       "We handle everything from A to Z — architectural planning, government approvals, structural work, and final finishing. Just hand us the land.",
     image: "/assets/hero.jpg",
     tag: "Most Popular",
-    size: "featured", // col-span-2 row-span-2
+    size: "featured",
+    slug: "turnkey-construction",
   },
   {
     icon: Wrench,
@@ -20,6 +22,7 @@ const services = [
       "Have an incomplete or partially built house? We take over and finish it to perfection.",
     image: "/assets/before.jpg",
     size: "medium",
+    slug: "project-completion",
   },
   {
     icon: Paintbrush,
@@ -28,6 +31,7 @@ const services = [
       "Premium interior finishing including flooring, painting, kitchen fitting, and bathroom tiling.",
     image: "/assets/apartment.jpg",
     size: "medium",
+    slug: "interior-finishing",
   },
   {
     icon: Ruler,
@@ -36,6 +40,7 @@ const services = [
       "Modern architectural plans tailored to your needs, optimizing space, light, and functionality.",
     image: "/assets/apartment1.jpg",
     size: "small",
+    slug: "architectural-design",
   },
   {
     icon: ClipboardCheck,
@@ -44,6 +49,7 @@ const services = [
       "Dedicated project managers ensuring timelines, budgets, and quality standards are met at every stage.",
     image: "/assets/modern-villa.jpg",
     size: "small",
+    slug: "project-management",
   },
   {
     icon: HardHat,
@@ -52,6 +58,7 @@ const services = [
       "Complete home renovations that transform aging properties into modern, energy-efficient living spaces.",
     image: null,
     size: "small",
+    slug: "renovations",
   },
 ];
 
@@ -78,11 +85,12 @@ function page() {
         </motion.div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[280px] gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[200px] md:auto-rows-[280px] gap-4">
 
           {/* Featured Card — Turnkey Construction (col-span-2, row-span-2) */}
+          <Link href={`/services/${services[0].slug}`} className="contents">
           <motion.div
-            className="relative md:col-span-2 md:row-span-2 rounded-2xl overflow-hidden group cursor-pointer"
+            className="relative md:col-span-2 md:row-span-2 col-span-1 row-span-2 rounded-2xl overflow-hidden group cursor-pointer"
             initial={{ opacity: 0, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -123,11 +131,12 @@ function page() {
               </div>
             </div>
           </motion.div>
+          </Link>
 
           {/* Medium Cards — Project Completion & Interior Finishing */}
           {[services[1], services[2]].map((service, i) => (
+            <Link key={service.title} href={`/services/${service.slug}`} className="contents">
             <motion.div
-              key={service.title}
               className="relative rounded-2xl overflow-hidden group cursor-pointer"
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -159,12 +168,13 @@ function page() {
                 </p>
               </div>
             </motion.div>
+            </Link>
           ))}
 
           {/* Small Cards — Architectural, Project Management, Renovations */}
           {[services[3], services[4], services[5]].map((service, i) => (
+            <Link key={service.title} href={`/services/${service.slug}`} className="contents">
             <motion.div
-              key={service.title}
               className="relative rounded-2xl overflow-hidden group cursor-pointer"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -207,6 +217,7 @@ function page() {
                 </p>
               </div>
             </motion.div>
+            </Link>
           ))}
 
         </div>
