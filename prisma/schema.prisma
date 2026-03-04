@@ -1,0 +1,146 @@
+// Prisma schema — Construction Website
+// Database: Neon (PostgreSQL) · ORM: Prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // URLs are configured in prisma.config.ts (Prisma 7+)
+}
+
+// ─────────────────────────────────────────────────────────────
+// PROJECT
+// ─────────────────────────────────────────────────────────────
+model Project {
+  id          Int      @id @default(autoincrement())
+  title       String
+  category    String   // "Residential" | "Commercial" | "Interior" | "Renovation"
+  location    String
+  year        String
+  image       String
+  description String
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+// SERVICE  (with related ProcessStep + Stat rows)
+// ─────────────────────────────────────────────────────────────
+model Service {
+  id          Int              @id @default(autoincrement())
+  slug        String           @unique
+  iconName    String           // lucide icon name e.g. "Home", "Wrench"
+  color       String           // Tailwind gradient classes
+  title       String
+  tagline     String
+  description String           @db.Text
+  highlights  String[]         // array of bullet-point strings
+  order       Int              @default(0)
+  process     ServiceProcess[]
+  stats       ServiceStat[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model ServiceProcess {
+  id        Int     @id @default(autoincrement())
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId Int
+  step      String  // "01", "02", "03", "04"
+  title     String
+  desc      String  @db.Text
+  order     Int     @default(0)
+}
+
+model ServiceStat {
+  id        Int     @id @default(autoincrement())
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId Int
+  value     String  // e.g. "200+"
+  label     String  // e.g. "Completed Builds"
+  order     Int     @default(0)
+}
+
+// ─────────────────────────────────────────────────────────────
+// TEAM MEMBER
+// ─────────────────────────────────────────────────────────────
+model TeamMember {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String
+  initials  String
+  color     String   // Tailwind gradient classes e.g. "from-amber-700 to-amber-500"
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+// REVIEW
+// ─────────────────────────────────────────────────────────────
+enum ReviewStatus {
+  pending
+  approved
+  rejected
+}
+
+model Review {
+  id        Int          @id @default(autoincrement())
+  name      String
+  initials  String
+  role      String       // e.g. "Homeowner", "Developer"
+  rating    Int          // 1–5
+  project   String       // project name the review is about
+  text      String       @db.Text
+  date      DateTime     @default(now())
+  status    ReviewStatus @default(pending)
+  helpful   Int          @default(0) // helpful vote count
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+// 360° WALKTHROUGH ROOM
+// ─────────────────────────────────────────────────────────────
+model WalkthroughRoom {
+  id          Int      @id @default(autoincrement())
+  roomKey     String   @unique // "living" | "kitchen" | "bedroom" | "bathroom"
+  name        String
+  description String
+  image       String   // panoramic image path / URL
+  order       Int      @default(0)
+  updatedAt   DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+// BEFORE / AFTER COMPARISON PAIR
+// ─────────────────────────────────────────────────────────────
+model BeforeAfter {
+  id          Int      @id @default(autoincrement())
+  label       String   @default("Portfolio Comparison")
+  beforeImage String
+  afterImage  String
+  order       Int      @default(0)
+  updatedAt   DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+// SITE SETTINGS  (singleton — always upsert id=1)
+// ─────────────────────────────────────────────────────────────
+model SiteSetting {
+  id           Int      @id @default(1)
+  // WhatsApp floating button
+  waNumber     String   @default("94771234567")
+  waMessage    String   @default("Hi! I'm interested in your construction services. Could you please provide more information?")
+  // Contact information
+  phone        String   @default("+94 77 123 4567")
+  email        String   @default("info@example.lk")
+  address      String   @default("")
+  // Business identity
+  businessName String   @default("Construction Co.")
+  tagline      String   @default("Building Your Dreams Into Reality")
+  updatedAt    DateTime @updatedAt
+}
