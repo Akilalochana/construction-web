@@ -35,6 +35,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const pathname = usePathname();
 
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/admin/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } finally {
+      window.location.href = "/admin/login";
+    }
+  };
+
   const showLabels = sidebarOpen || mobileSidebarOpen;
 
   return (
@@ -112,6 +123,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {showLabels && <span className="text-sm font-medium">View Site</span>}
           </Link>
           <button
+            onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/50 hover:bg-red-500/20 hover:text-red-400 transition-all"
           >
             <LogOut size={18} className="shrink-0" />
