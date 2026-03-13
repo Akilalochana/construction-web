@@ -1,5 +1,3 @@
-'use client'
-
 import HomePage from "./(landing)/home-page/page" 
 import Services from "./(landing)/services/page"
 import Portfolio from "./(landing)/portfolio/page"
@@ -21,7 +19,7 @@ const Home = () => {
    <About/>
    <Testimonials/>
    <Contact/>
-    <Footer/>
+    {/* <Footer/> */}
    </>
    
   );

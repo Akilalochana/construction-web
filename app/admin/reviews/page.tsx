@@ -79,7 +79,6 @@ export default function AdminReviews() {
       });
       if (res.ok) {
         setReviews((prev) => prev.map((r) => r.id === id ? { ...r, status } : r));
-        // view modal-ඒකේ open නම් close කරනවා
         if (viewId === id) setViewId(null);
       }
     } catch {

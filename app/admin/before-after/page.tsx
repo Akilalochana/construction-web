@@ -97,7 +97,7 @@ export default function AdminBeforeAfter() {
   };
 
   const closeModal = () => {
-    // Blob URLs free කරනවා
+    // Blob URLs free 
     if (form.beforePreview.startsWith("blob:")) URL.revokeObjectURL(form.beforePreview);
     if (form.afterPreview.startsWith("blob:")) URL.revokeObjectURL(form.afterPreview);
     setShowModal(false);

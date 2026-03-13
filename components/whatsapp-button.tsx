@@ -23,7 +23,7 @@ export default function WhatsAppButton() {
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-6 right-8 sm:right-10 md:right-14 z-50 flex flex-col items-end gap-3">
 
       {/* Chat bubble tooltip */}
       <AnimatePresence>

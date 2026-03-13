@@ -48,7 +48,7 @@ export default function ServiceDetailPage({
         const res = await fetch(`/api/services/${slug}`);
 
         if (res.status === 404) {
-          // Service-ඒකක් නැතිනම් notFound page
+        
           setNotFoundState(true);
           return;
         }
@@ -65,7 +65,7 @@ export default function ServiceDetailPage({
     fetchService();
   }, [slug]);
 
-  // notFound() — Next.js-ඒකේ built-in 404 page
+
   if (notFoundState) notFound();
 
   if (loading) {

@@ -56,7 +56,7 @@ export default function AdminProjects() {
   const [saved, setSaved] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  // Hidden file input-ඒකට reference
+  // Hidden file input
 
   // ── Load Projects ───────────────────────────────────────────────────────────
   useEffect(() => {
@@ -102,7 +102,7 @@ export default function AdminProjects() {
   };
 
   // ── Handle Image Pick ───────────────────────────────────────────────────────
-  // User file select කළාම run වෙනවා
+ 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -111,7 +111,7 @@ export default function AdminProjects() {
       ...prev,
       imageFile: file,
       imagePreview: URL.createObjectURL(file),
-      // createObjectURL → browser-ඒකේ temporary URL → preview-ඒකේ පෙන්වනවා
+     
     }));
   };
 
@@ -122,7 +122,6 @@ export default function AdminProjects() {
       return;
     }
     if (!editingId && !form.imageFile) {
-      // Add mode-ඒකේදී image required
       setError("Please select an image.");
       return;
     }
@@ -131,7 +130,7 @@ export default function AdminProjects() {
     setError(null);
 
     try {
-      // FormData හදනවා — file upload-ට JSON-ට වෙනුවට FormData use කරනවා
+     
       const formData = new FormData();
       formData.append("title", form.title);
       formData.append("category", form.category);
@@ -139,15 +138,15 @@ export default function AdminProjects() {
       formData.append("year", form.year);
       formData.append("description", form.description);
       formData.append("featured", String(form.featured));
-      // String() — boolean "true"/"false" string ඒකට convert කරනවා
+    
 
       if (form.imageFile) {
         formData.append("image", form.imageFile);
-        // image file select කළොත් viitarak append කරනවා
-        // Edit-ඒකේ image නොවෙනස් කළොත් imageFile null — skip
+        // when image file is selected — add to formData
+        
       }
 
-      // Add නම් POST, Edit නම් PUT
+      //if Add POST, if Edit  PUT
       const url = editingId
         ? `/api/admin/projects/${editingId}`
         : "/api/admin/projects";
@@ -155,7 +154,7 @@ export default function AdminProjects() {
       const res = await fetch(url, {
         method: editingId ? "PUT" : "POST",
         body: formData,
-        // Headers දෙන්නේ නැහැ — browser automatically "multipart/form-data" set කරනවා
+        
       });
 
       const data = await res.json();
@@ -171,7 +170,7 @@ export default function AdminProjects() {
         return;
       }
 
-      // Success — projects list refresh කරනවා
+     
       await fetchProjects();
       setShowModal(false);
       setSaved(true);
@@ -199,7 +198,7 @@ export default function AdminProjects() {
         return;
       }
 
-      // Success — list-ඒකෙන් remove කරනවා (refetch නොකර faster)
+      
       setProjects((prev) => prev.filter((p) => p.id !== deleteId));
       setDeleteId(null);
 
@@ -256,7 +255,7 @@ export default function AdminProjects() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}>
               <div className="relative h-40 overflow-hidden">
-                {/* /api/files/ → ඔයාගේ file serving route */}
+            
                 <img src={`/api/files/${p.image}`} alt={p.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
@@ -362,7 +361,7 @@ export default function AdminProjects() {
                     Photo {!editingId && "*"}
                   </label>
 
-                  {/* Preview — file select කළොත් හෝ edit mode-ඒකේ පරණ image */}
+                
                   {form.imagePreview && (
                     <div className="relative h-32 rounded-xl overflow-hidden mb-2 border border-border">
                       <img src={form.imagePreview} alt="Preview"

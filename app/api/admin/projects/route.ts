@@ -58,8 +58,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // ✅ FIX 2: generateProjectFilename-ට mimeType දෙනවා → correct extension guarantee
-    // ✅ FIX 1: getProjectImagePath-ට projectId දෙන්නේ නැහැ
+
     const filename = generateProjectFilename(imageFile.type);
     uploadedImagePath = getProjectImagePath(filename);
 
@@ -69,7 +68,6 @@ export async function POST(req: NextRequest) {
       allowedTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
     });
 
-    // ✅ FIX 3: "/0/" replace කරන broken code block සම්පූර්ණයෙන් ඉවත් කළා
     const project = await prisma.project.create({
       data: {
         ...data,

@@ -72,7 +72,7 @@ export default function AdminWalkthrough() {
       description: room.description,
       order: room.order,
       imageFile: null,
-      imagePreview: `/api/files/${room.image}`, // පරණ image preview
+      imagePreview: `/api/files/${room.image}`, 
     });
     setEditingId(room.id);
     setError(null);

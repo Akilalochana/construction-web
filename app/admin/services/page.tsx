@@ -7,8 +7,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-// ── Icon map — iconName string → LucideIcon component ────────────────────────
-// DB-ඒකේ "Home" කියන string save වෙනවා → component-ඒකේදී icon render කරනවා
+
 const ICON_MAP: Record<string, LucideIcon> = {
   Home, Wrench, ClipboardCheck, Ruler, HardHat, Paintbrush,
 };
@@ -25,11 +24,11 @@ interface Stat {
   label: string;
   order: number;
 }
-// API-ඒකෙන් එන service shape
+
 interface Service {
   id: number;
   slug: string;
-  iconName: string;   // "Home", "Wrench" etc — DB-ඒකේ string
+  iconName: string; 
   color: string;
   title: string;
   tagline: string;
@@ -40,7 +39,6 @@ interface Service {
   stats: Stat[];
 }
 
-// Edit drawer-ඒකේ form state
 type Draft = Omit<Service, "id">;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -89,7 +87,7 @@ export default function AdminServices() {
 
   // ── Open edit drawer ────────────────────────────────────────────────────────
   const openEdit = (s: Service) => {
-    // Deep clone — original object වෙනස් වෙන්නේ නැහැ
+    
     setDraft(JSON.parse(JSON.stringify(s)));
     setEditingId(s.id);
     setExpandedSection("basics");
@@ -226,8 +224,7 @@ export default function AdminServices() {
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {services.map((s, i) => {
-            // iconName string → LucideIcon component
-            // ICON_MAP-ඒකේ නැතිනම් Home use කරනවා (fallback)
+        
             const Icon = ICON_MAP[s.iconName] ?? Home;
             return (
               <motion.div key={s.id}

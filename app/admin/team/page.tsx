@@ -97,7 +97,7 @@ export default function AdminTeam() {
       color: m.color,
       order: m.order,
       imageFile: null,
-      // existing image-ඒකේ preview — /api/files/ route
+      
       imagePreview: m.image ? `/api/files/${m.image}` : "",
       removeImage: false,
     });
@@ -385,7 +385,7 @@ export default function AdminTeam() {
                     className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </div>
 
-                {/* Color — photo නැතිනම් fallback gradient */}
+               
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 block">
                     Card Color <span className="font-normal text-muted-foreground">(used when no photo)</span>
