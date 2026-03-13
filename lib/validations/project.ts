@@ -1,5 +1,6 @@
 import * as yup from "yup";
 
+// Schema for JSON body (image as URL)
 export const projectSchema = yup.object({
   title: yup.string().required("Title is required").max(200),
   category: yup
@@ -16,4 +17,21 @@ export const projectSchema = yup.object({
   featured: yup.boolean().default(false),
 });
 
+// Schema for FormData (without image file - validated separately)
+export const projectFormSchema = yup.object({
+  title: yup.string().required("Title is required").max(200),
+  category: yup
+    .string()
+    .required("Category is required")
+    .oneOf(
+      ["Residential", "Commercial", "Interior", "Renovation"],
+      "Invalid category"
+    ),
+  location: yup.string().required("Location is required").max(200),
+  year: yup.string().required("Year is required").max(10),
+  description: yup.string().required("Description is required"),
+  featured: yup.boolean().default(false),
+});
+
 export type ProjectInput = yup.InferType<typeof projectSchema>;
+export type ProjectFormInput = yup.InferType<typeof projectFormSchema>;

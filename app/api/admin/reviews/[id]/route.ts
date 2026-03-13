@@ -1,41 +1,10 @@
 import { NextRequest } from "next/server";
-import * as yup from "yup";
 import { ApiResponse } from "@/lib/utils/response";
 import { prisma } from "@/lib/prisma";
 import { verifyAdminAuth } from "@/lib/utils/auth-middleware";
-import { reviewSchema } from "@/lib/validations/review";
-import { getYupErrorsUF } from "@/lib/utils/yup-errors";
 
 // GET single review
 export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const reviewId = Number(id);
-
-    if (isNaN(reviewId)) {
-      return ApiResponse.failed("Invalid review ID");
-    }
-
-    const review = await prisma.review.findUnique({
-      where: { id: reviewId },
-    });
-
-    if (!review) {
-      return ApiResponse.notFound("Review not found");
-    }
-
-    return ApiResponse.success("Review retrieved successfully", { review });
-  } catch (error) {
-    console.error("Get review error:", error);
-    return ApiResponse.error("Failed to retrieve review");
-  }
-}
-
-// PUT update review
-export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -45,33 +14,51 @@ export async function PUT(
   try {
     const { id } = await params;
     const reviewId = Number(id);
+    if (isNaN(reviewId)) return ApiResponse.failed("Invalid review ID");
 
-    if (isNaN(reviewId)) {
-      return ApiResponse.failed("Invalid review ID");
-    }
+    const review = await prisma.review.findUnique({ where: { id: reviewId } });
+    if (!review) return ApiResponse.notFound("Review not found");
+
+    return ApiResponse.success("Review retrieved successfully", { review });
+  } catch (error) {
+    console.error("Get review error:", error);
+    return ApiResponse.error("Failed to retrieve review");
+  }
+}
+
+// PATCH — approve or reject a review
+// Body: { status: "approved" | "rejected" }
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const authResult = await verifyAdminAuth(req);
+  if ("error" in authResult) return authResult.error;
+
+  try {
+    const { id } = await params;
+    const reviewId = Number(id);
+    if (isNaN(reviewId)) return ApiResponse.failed("Invalid review ID");
 
     const body = await req.json();
-    const data = await reviewSchema.validate(body, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
+    const { status } = body;
+
+    if (!["approved", "rejected", "pending"].includes(status)) {
+      return ApiResponse.failed("Status must be 'approved', 'rejected', or 'pending'");
+    }
+
+    const existing = await prisma.review.findUnique({ where: { id: reviewId } });
+    if (!existing) return ApiResponse.notFound("Review not found");
 
     const review = await prisma.review.update({
       where: { id: reviewId },
-      data,
+      data: { status },
     });
 
-    return ApiResponse.success("Review updated successfully", { review });
+    return ApiResponse.success(`Review ${status} successfully`, { review });
   } catch (error) {
-    if (error instanceof yup.ValidationError) {
-      const errors = getYupErrorsUF(error);
-      return ApiResponse.failed(
-        "Please check the provided information and try again.",
-        errors
-      );
-    }
-    console.error("Update review error:", error);
-    return ApiResponse.error("Failed to update review");
+    console.error("Update review status error:", error);
+    return ApiResponse.error("Failed to update review status");
   }
 }
 
@@ -86,14 +73,12 @@ export async function DELETE(
   try {
     const { id } = await params;
     const reviewId = Number(id);
+    if (isNaN(reviewId)) return ApiResponse.failed("Invalid review ID");
 
-    if (isNaN(reviewId)) {
-      return ApiResponse.failed("Invalid review ID");
-    }
+    const existing = await prisma.review.findUnique({ where: { id: reviewId } });
+    if (!existing) return ApiResponse.notFound("Review not found");
 
-    await prisma.review.delete({
-      where: { id: reviewId },
-    });
+    await prisma.review.delete({ where: { id: reviewId } });
 
     return ApiResponse.success("Review deleted successfully");
   } catch (error) {

@@ -22,12 +22,8 @@ export async function GET(
     const service = await prisma.service.findUnique({
       where: { id: serviceId },
       include: {
-        process: {
-          orderBy: { order: "asc" },
-        },
-        stats: {
-          orderBy: { order: "asc" },
-        },
+        process: { orderBy: { order: "asc" } },
+        stats: { orderBy: { order: "asc" } },
       },
     });
 
@@ -58,6 +54,15 @@ export async function PUT(
       return ApiResponse.failed("Invalid service ID");
     }
 
+    // ✅ Bug 3 Fix: exist check — නැතිනම් early return
+    const existing = await prisma.service.findUnique({
+      where: { id: serviceId },
+    });
+
+    if (!existing) {
+      return ApiResponse.notFound("Service not found");
+    }
+
     const body = await req.json();
     const data = await serviceSchema.validate(body, {
       abortEarly: false,
@@ -66,30 +71,45 @@ export async function PUT(
 
     const { process, stats, ...serviceData } = data;
 
-    // Delete existing related records and recreate them
-    await prisma.serviceProcess.deleteMany({
-      where: { serviceId },
-    });
+    // ✅ Bug 1 Fix: Transaction use කරනවා
+    // deleteMany + update ඔක්කොම එක atomic operation ඒකේ වෙනවා
+    // ඕනෑම step-ඒකක් fail වුනොත් ඔක්කොම rollback — data loss නැහැ
+    const service = await prisma.$transaction(async (tx) => {
 
-    await prisma.serviceStat.deleteMany({
-      where: { serviceId },
-    });
+      // Step 1: පරණ process records delete
+      await tx.serviceProcess.deleteMany({
+        where: { serviceId },
+      });
 
-    const service = await prisma.service.update({
-      where: { id: serviceId },
-      data: {
-        ...serviceData,
-        process: {
-          create: process,
+      // Step 2: පරණ stat records delete
+      await tx.serviceStat.deleteMany({
+        where: { serviceId },
+      });
+
+      // Step 3: Service update + නව records create
+      // මේ ඔක්කොම fail වුනොත් step 1 සහ 2 ද rollback වෙනවා
+      return tx.service.update({
+        where: { id: serviceId },
+        data: {
+          ...serviceData,
+          process: {
+            create: process.map((p: any, i: number) => ({
+              ...p,
+              order: p.order ?? i + 1,
+            })),
+          },
+          stats: {
+            create: stats.map((s: any, i: number) => ({
+              ...s,
+              order: s.order ?? i + 1,
+            })),
+          },
         },
-        stats: {
-          create: stats,
+        include: {
+          process: { orderBy: { order: "asc" } },
+          stats: { orderBy: { order: "asc" } },
         },
-      },
-      include: {
-        process: true,
-        stats: true,
-      },
+      });
     });
 
     return ApiResponse.success("Service updated successfully", { service });
@@ -122,8 +142,22 @@ export async function DELETE(
       return ApiResponse.failed("Invalid service ID");
     }
 
-    await prisma.service.delete({
+    // ✅ exist check
+    const existing = await prisma.service.findUnique({
       where: { id: serviceId },
+    });
+
+    if (!existing) {
+      return ApiResponse.notFound("Service not found");
+    }
+
+    // ✅ Bug 2 Fix: Transaction-ඒකෙන් manually cascade delete කරනවා
+    // Prisma schema-ඒකේ onDelete: Cascade set නොකළොත් ද safe
+    await prisma.$transaction(async (tx) => {
+      // Child records මුලින් delete — parent delete කරන්න කලින්
+      await tx.serviceProcess.deleteMany({ where: { serviceId } });
+      await tx.serviceStat.deleteMany({ where: { serviceId } });
+      await tx.service.delete({ where: { id: serviceId } });
     });
 
     return ApiResponse.success("Service deleted successfully");

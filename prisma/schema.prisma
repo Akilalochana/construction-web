@@ -72,7 +72,8 @@ model TeamMember {
   name      String
   role      String
   initials  String
-  color     String   // Tailwind gradient classes e.g. "from-amber-700 to-amber-500"
+  color     String
+  image     String?  // ← මේක add කරන්න (optional — photo නැතිනම් null)
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -107,7 +108,7 @@ model Review {
 // ─────────────────────────────────────────────────────────────
 model WalkthroughRoom {
   id          Int      @id @default(autoincrement())
-  roomKey     String   @unique // "living" | "kitchen" | "bedroom" | "bathroom"
+  roomKey     String   @unique @default(cuid()) 
   name        String
   description String
   image       String   // panoramic image path / URL
@@ -120,13 +121,15 @@ model WalkthroughRoom {
 // ─────────────────────────────────────────────────────────────
 model BeforeAfter {
   id          Int      @id @default(autoincrement())
-  label       String   @default("Portfolio Comparison")
+  title       String   @db.VarChar(200)
+  location    String?  @db.VarChar(200)
+  year        String?  @db.VarChar(10)
+  order       Int      @default(1)
   beforeImage String
   afterImage  String
-  order       Int      @default(0)
+  createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
-
 // ─────────────────────────────────────────────────────────────
 // SITE SETTINGS  (singleton — always upsert id=1)
 // ─────────────────────────────────────────────────────────────

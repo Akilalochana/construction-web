@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Save, CheckCircle, MessageCircle, Phone, Mail, MapPin, ExternalLink } from "lucide-react";
+import { Save, CheckCircle, MessageCircle, Phone, Mail, MapPin, ExternalLink, Loader2 } from "lucide-react";
 
 const inputCls = "w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 bg-white";
 const textareaCls = `${inputCls} resize-none`;
@@ -16,26 +16,77 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
+type Settings = {
+  waNumber: string;
+  waMessage: string;
+  phone: string;
+  email: string;
+  address: string;
+  businessName: string;
+  tagline: string;
+};
+
+const defaults: Settings = {
+  waNumber:     "94771234567",
+  waMessage:    "Hi! I'm interested in your construction services. Could you please provide more information?",
+  phone:        "+94 77 123 4567",
+  email:        "info@example.lk",
+  address:      "",
+  businessName: "Construction Co.",
+  tagline:      "Building Your Dreams Into Reality",
+};
+
 export default function AdminSettings() {
-  /* WhatsApp */
-  const [waNumber,  setWaNumber]  = useState("94771234567");
-  const [waMessage, setWaMessage] = useState("Hi! I'm interested in your construction services. Could you please provide more information?");
-  const [waSaved,   setWaSaved]   = useState(false);
+  const [settings, setSettings] = useState<Settings>(defaults);
+  const [loading, setLoading]   = useState(true);
+  const [saving, setSaving]     = useState<string | null>(null); // which section is saving
+  const [saved,  setSaved]      = useState<string | null>(null);
+  const [error,  setError]      = useState<string | null>(null);
 
-  /* Contact info */
-  const [phone,   setPhone]   = useState("+94 77 123 4567");
-  const [email,   setEmail]   = useState("info@sriranjanaconstruction.lk");
-  const [address, setAddress] = useState("No. 42, Main Street, Colombo 05, Sri Lanka");
-  const [contactSaved, setContactSaved] = useState(false);
+  // ── Load from DB ────────────────────────────────────────────────────────────
+  useEffect(() => {
+    fetch("/api/admin/settings")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.data?.settings) setSettings(d.data.settings);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
 
-  /* Business */
-  const [bizName,   setBizName]   = useState("Sri Ranjana Construction");
-  const [tagline,   setTagline]   = useState("Building Your Dreams Into Reality");
-  const [bizSaved,  setBizSaved]  = useState(false);
+  // ── Save section to DB ──────────────────────────────────────────────────────
+  const saveSection = async (section: string) => {
+    setSaving(section);
+    setError(null);
+    try {
+      const res  = await fetch("/api/admin/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings), // send all settings — DB upsert
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.message || "Save failed."); return; }
+      setSaved(section);
+      setTimeout(() => setSaved(null), 2400);
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setSaving(null);
+    }
+  };
 
-  const saveSec = (setter: (v: boolean) => void) => { setter(true); setTimeout(() => setter(false), 2400); };
+  const set = (key: keyof Settings, val: string) =>
+    setSettings((prev) => ({ ...prev, [key]: val }));
 
-  const previewUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+  const previewUrl = `https://wa.me/${settings.waNumber}?text=${encodeURIComponent(settings.waMessage)}`;
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-20">
+        <Loader2 size={32} className="animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl space-y-8">
@@ -44,7 +95,11 @@ export default function AdminSettings() {
         <p className="text-muted-foreground text-sm mt-1">Configure contact details, WhatsApp button, and site information</p>
       </div>
 
-      {/* ── WhatsApp Button ─────────────────────────────────── */}
+      {error && (
+        <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl border border-red-200">{error}</div>
+      )}
+
+      {/* ── WhatsApp ── */}
       <motion.section className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
         initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
         <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-[#25D366]/8">
@@ -58,24 +113,21 @@ export default function AdminSettings() {
             <p className="text-xs text-muted-foreground">Floating chat button shown on all public pages</p>
           </div>
         </div>
-
         <div className="px-6 py-5 space-y-5">
           <Field label="WhatsApp Business Number"
-            hint="Country code + number, no spaces or + sign. e.g. Sri Lanka 077 123 4567 → 94771234567">
+            hint="Country code + number, no spaces or + sign. e.g. 94771234567">
             <div className="flex gap-2">
               <span className="flex items-center px-3 bg-secondary border border-border rounded-xl text-sm text-muted-foreground font-mono select-none">wa.me/</span>
-              <input className={`${inputCls} flex-1 font-mono`} value={waNumber}
-                onChange={(e) => setWaNumber(e.target.value.replace(/\D/g, ""))}
+              <input className={`${inputCls} flex-1 font-mono`} value={settings.waNumber}
+                onChange={(e) => set("waNumber", e.target.value.replace(/\D/g, ""))}
                 placeholder="94771234567" />
             </div>
           </Field>
-
           <Field label="Pre-filled Chat Message"
             hint="This message is auto-typed when the customer opens the chat">
-            <textarea className={textareaCls} rows={3} value={waMessage} onChange={(e) => setWaMessage(e.target.value)} />
+            <textarea className={textareaCls} rows={3} value={settings.waMessage}
+              onChange={(e) => set("waMessage", e.target.value)} />
           </Field>
-
-          {/* Preview link */}
           <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
             <MessageCircle size={16} className="text-[#25D366] shrink-0" />
             <p className="text-xs text-green-800 flex-1 break-all font-mono">{previewUrl}</p>
@@ -84,20 +136,20 @@ export default function AdminSettings() {
               <ExternalLink size={15} />
             </a>
           </div>
-
           <div className="flex items-center justify-between pt-1">
-            {waSaved
+            {saved === "wa"
               ? <span className="flex items-center gap-1.5 text-green-600 text-sm font-medium"><CheckCircle size={15} /> Saved!</span>
               : <span />}
-            <button onClick={() => saveSec(setWaSaved)}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-xl text-sm font-semibold transition">
-              <Save size={14} /> Save WhatsApp Settings
+            <button onClick={() => saveSection("wa")} disabled={saving === "wa"}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-xl text-sm font-semibold transition disabled:opacity-60">
+              {saving === "wa" ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+              Save WhatsApp Settings
             </button>
           </div>
         </div>
       </motion.section>
 
-      {/* ── Contact Info ────────────────────────────────────── */}
+      {/* ── Contact Info ── */}
       <motion.section className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
         initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
         <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-secondary/30">
@@ -111,34 +163,38 @@ export default function AdminSettings() {
           <Field label="Phone Number">
             <div className="relative">
               <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input className={`${inputCls} pl-9`} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+94 77 123 4567" />
+              <input className={`${inputCls} pl-9`} value={settings.phone}
+                onChange={(e) => set("phone", e.target.value)} placeholder="+94 77 123 4567" />
             </div>
           </Field>
           <Field label="Email Address">
             <div className="relative">
               <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input className={`${inputCls} pl-9`} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="info@example.lk" />
+              <input className={`${inputCls} pl-9`} value={settings.email}
+                onChange={(e) => set("email", e.target.value)} placeholder="info@example.lk" />
             </div>
           </Field>
           <Field label="Office Address">
             <div className="relative">
               <MapPin size={15} className="absolute left-3.5 top-3.5 text-muted-foreground" />
-              <textarea className={`${textareaCls} pl-9`} rows={2} value={address} onChange={(e) => setAddress(e.target.value)} />
+              <textarea className={`${textareaCls} pl-9`} rows={2} value={settings.address}
+                onChange={(e) => set("address", e.target.value)} />
             </div>
           </Field>
           <div className="flex items-center justify-between pt-1">
-            {contactSaved
+            {saved === "contact"
               ? <span className="flex items-center gap-1.5 text-green-600 text-sm font-medium"><CheckCircle size={15} /> Saved!</span>
               : <span />}
-            <button onClick={() => saveSec(setContactSaved)}
-              className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition">
-              <Save size={14} /> Save Contact Info
+            <button onClick={() => saveSection("contact")} disabled={saving === "contact"}
+              className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition disabled:opacity-60">
+              {saving === "contact" ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+              Save Contact Info
             </button>
           </div>
         </div>
       </motion.section>
 
-      {/* ── Business Info ───────────────────────────────────── */}
+      {/* ── Business Info ── */}
       <motion.section className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
         initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
         <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-secondary/30">
@@ -152,18 +208,21 @@ export default function AdminSettings() {
         </div>
         <div className="px-6 py-5 space-y-4">
           <Field label="Business Name">
-            <input className={inputCls} value={bizName} onChange={(e) => setBizName(e.target.value)} placeholder="Sri Ranjana Construction" />
+            <input className={inputCls} value={settings.businessName}
+              onChange={(e) => set("businessName", e.target.value)} placeholder="Sri Ranjana Construction" />
           </Field>
           <Field label="Tagline">
-            <input className={inputCls} value={tagline} onChange={(e) => setTagline(e.target.value)} placeholder="Building Your Dreams Into Reality" />
+            <input className={inputCls} value={settings.tagline}
+              onChange={(e) => set("tagline", e.target.value)} placeholder="Building Your Dreams Into Reality" />
           </Field>
           <div className="flex items-center justify-between pt-1">
-            {bizSaved
+            {saved === "biz"
               ? <span className="flex items-center gap-1.5 text-green-600 text-sm font-medium"><CheckCircle size={15} /> Saved!</span>
               : <span />}
-            <button onClick={() => saveSec(setBizSaved)}
-              className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition">
-              <Save size={14} /> Save Business Info
+            <button onClick={() => saveSection("biz")} disabled={saving === "biz"}
+              className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition disabled:opacity-60">
+              {saving === "biz" ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+              Save Business Info
             </button>
           </div>
         </div>

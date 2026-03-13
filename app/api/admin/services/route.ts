@@ -11,12 +11,8 @@ export async function GET() {
   try {
     const services = await prisma.service.findMany({
       include: {
-        process: {
-          orderBy: { order: "asc" },
-        },
-        stats: {
-          orderBy: { order: "asc" },
-        },
+        process: { orderBy: { order: "asc" } },
+        stats: { orderBy: { order: "asc" } },
       },
       orderBy: { order: "asc" },
     });
@@ -46,15 +42,21 @@ export async function POST(req: NextRequest) {
       data: {
         ...serviceData,
         process: {
-          create: process,
+          create: process.map((p: any, i: number) => ({
+            ...p,
+            order: p.order ?? i + 1,
+          })),
         },
         stats: {
-          create: stats,
+          create: stats.map((s: any, i: number) => ({
+            ...s,
+            order: s.order ?? i + 1,
+          })),
         },
       },
       include: {
-        process: true,
-        stats: true,
+        process: { orderBy: { order: "asc" } },
+        stats: { orderBy: { order: "asc" } },
       },
     });
 

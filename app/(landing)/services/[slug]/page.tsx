@@ -1,217 +1,98 @@
 "use client";
-import { use } from "react";
+import { use, useState, useEffect } from "react";
 import { notFound } from "next/navigation";
 import { motion } from "framer-motion";
-import { Home, Wrench, ClipboardCheck, Ruler, HardHat, Paintbrush, ArrowLeft, CheckCircle } from "lucide-react";
+import {
+  Home, Wrench, ClipboardCheck, Ruler, HardHat, Paintbrush,
+  ArrowLeft, CheckCircle, Loader2,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const servicesData: Record<string, {
-  icon: LucideIcon;
+// ── Icon map ──────────────────────────────────────────────────────────────────
+const ICON_MAP: Record<string, LucideIcon> = {
+  Home, Wrench, ClipboardCheck, Ruler, HardHat, Paintbrush,
+};
+
+// ── Type ──────────────────────────────────────────────────────────────────────
+type Service = {
+  id: number;
+  slug: string;
+  iconName: string;
+  color: string;
   title: string;
   tagline: string;
   description: string;
   image: string | null;
-  color: string;
   highlights: string[];
-  process: { step: string; title: string; desc: string }[];
-  stats: { value: string; label: string }[];
-}> = {
-  "turnkey-construction": {
-    icon: Home,
-    title: "Turnkey Construction",
-    tagline: "Complete Build, Zero Stress",
-    description:
-      "We handle everything from A to Z — from the first architectural sketch to handing you the keys. Our turnkey service covers planning permissions, structural work, MEP installations, and premium finishing. You stay informed at every milestone; we handle every detail.",
-    image: "/assets/hero.jpg",
-    color: "from-[hsl(220,60%,14%)] to-[hsl(220,50%,28%)]",
-    highlights: [
-      "Architectural design & planning approvals",
-      "Full structural & civil works",
-      "Electrical, plumbing & HVAC installations",
-      "Premium interior finishing",
-      "Landscaping & external works",
-      "Defects liability & after-handover support",
-    ],
-    process: [
-      { step: "01", title: "Consultation & Design", desc: "We understand your vision, budget, and timeline to create a tailored architectural plan." },
-      { step: "02", title: "Approvals & Permits",   desc: "Our team handles all government approvals and building permits on your behalf." },
-      { step: "03", title: "Construction Phase",    desc: "Experienced crews execute structural, MEP, and finishing works to exacting standards." },
-      { step: "04", title: "Handover",              desc: "Final inspections, punch-list resolution, and keys-in-hand delivery to you." },
-    ],
-    stats: [
-      { value: "200+", label: "Completed Builds" },
-      { value: "15+",  label: "Years Experience" },
-      { value: "100%", label: "On-Time Delivery" },
-      { value: "4.9★", label: "Client Rating" },
-    ],
-  },
-  "project-completion": {
-    icon: Wrench,
-    title: "Project Completion",
-    tagline: "We Finish What Others Started",
-    description:
-      "Have a partially built or stalled property? We perform a thorough structural and quality audit, then take full ownership of completing the project — fast, cleanly, and to the highest standard. No hidden costs, no more delays.",
-    image: "/assets/before.jpg",
-    color: "from-amber-700 to-amber-500",
-    highlights: [
-      "Free structural & quality audit",
-      "Transparent completion cost estimate",
-      "Seamless handover from previous contractor",
-      "Rectification of substandard work",
-      "Dedicated completion manager",
-      "Fixed-price completion contracts available",
-    ],
-    process: [
-      { step: "01", title: "Site Audit",          desc: "We inspect existing work, identify defects, and assess what remains to be done." },
-      { step: "02", title: "Scope & Pricing",      desc: "A clear, itemised quote is provided — no surprises mid-project." },
-      { step: "03", title: "Remediation & Build",  desc: "Defective work is rectified before continuing the build to our standards." },
-      { step: "04", title: "Final Completion",     desc: "Full finishing, snagging, and handover at your convenience." },
-    ],
-    stats: [
-      { value: "80+",  label: "Completions" },
-      { value: "3–6",  label: "Month Avg. Delivery" },
-      { value: "0",    label: "Hidden Fees" },
-      { value: "100%", label: "Satisfaction" },
-    ],
-  },
-  "interior-finishing": {
-    icon: Paintbrush,
-    title: "Interior Finishing",
-    tagline: "Spaces That Tell Your Story",
-    description:
-      "We transform bare concrete shells into beautifully finished living or working spaces. From bespoke kitchen cabinetry to large-format floor tiling and designer bathroom suites, every finish is selected and installed with precision.",
-    image: "/assets/apartment.jpg",
-    color: "from-rose-700 to-rose-500",
-    highlights: [
-      "Flooring — tile, hardwood, vinyl & marble",
-      "Custom kitchen and joinery fitting",
-      "Bathroom tiling & sanitary ware installation",
-      "Plastering, skimming & decorative painting",
-      "False ceilings & feature lighting",
-      "Built-in wardrobes & storage solutions",
-    ],
-    process: [
-      { step: "01", title: "Design Consultation", desc: "Material boards, mood boards, and 3D visualisations to align with your taste." },
-      { step: "02", title: "Material Selection",  desc: "Access to our curated catalogue of premium local and imported finishes." },
-      { step: "03", title: "Installation",        desc: "Skilled tradespeople carry out each finish with meticulous attention to detail." },
-      { step: "04", title: "Styling & Handover",  desc: "Final styling walk-through and snag-free handover." },
-    ],
-    stats: [
-      { value: "150+", label: "Interiors Finished" },
-      { value: "30+",  label: "Finish Options" },
-      { value: "5yr",  label: "Workmanship Warranty" },
-      { value: "4.8★", label: "Client Rating" },
-    ],
-  },
-  "architectural-design": {
-    icon: Ruler,
-    title: "Architectural Design",
-    tagline: "Form Meets Function",
-    description:
-      "Our in-house architects create modern, context-sensitive designs that maximise natural light, optimise space, and reflect your personality. Every plan is engineered for both beauty and buildability.",
-    image: "/assets/apartment1.jpg",
-    color: "from-indigo-700 to-indigo-500",
-    highlights: [
-      "Concept & schematic design",
-      "Detailed construction drawings",
-      "3D visualisations & walkthroughs",
-      "Structural engineering coordination",
-      "Planning permission packages",
-      "Interior design integration",
-    ],
-    process: [
-      { step: "01", title: "Brief & Discovery", desc: "Deep-dive session to understand your lifestyle, budget, and site constraints." },
-      { step: "02", title: "Concept Design",    desc: "Sketch options and spatial studies refined into a preferred scheme." },
-      { step: "03", title: "Developed Design",  desc: "Detailed drawings, material schedules, and submission-ready documents." },
-      { step: "04", title: "Construction Support", desc: "On-site architect oversight during build to ensure design intent is realised." },
-    ],
-    stats: [
-      { value: "120+", label: "Designs Completed" },
-      { value: "100%", label: "Permit Success Rate" },
-      { value: "15+",  label: "Award Nominations" },
-      { value: "4.9★", label: "Client Rating" },
-    ],
-  },
-  "project-management": {
-    icon: ClipboardCheck,
-    title: "Project Management",
-    tagline: "On Time. On Budget. Every Time.",
-    description:
-      "A dedicated project manager is your single point of contact throughout the entire build. We coordinate contractors, track milestones, manage budgets, and ensure quality at every stage so you never have to worry.",
-    image: "/assets/modern-villa.jpg",
-    color: "from-emerald-800 to-emerald-600",
-    highlights: [
-      "Dedicated project manager from day one",
-      "Weekly progress reports & site visits",
-      "Contractor procurement & management",
-      "Budget tracking & cost control",
-      "Risk identification & mitigation",
-      "Real-time project dashboard access",
-    ],
-    process: [
-      { step: "01", title: "Project Briefing",    desc: "Define scope, budget, programme, and success criteria together." },
-      { step: "02", title: "Procurement",         desc: "We source and vet the best-value contractors for each trade." },
-      { step: "03", title: "Execution & Control", desc: "Daily on-site coordination with weekly client reporting." },
-      { step: "04", title: "Closeout",            desc: "Final inspections, contract closeout, and lessons-learned documentation." },
-    ],
-    stats: [
-      { value: "500+", label: "Projects Managed" },
-      { value: "97%",  label: "On-Time Completion" },
-      { value: "12%",  label: "Avg. Cost Saving" },
-      { value: "4.9★", label: "Client Rating" },
-    ],
-  },
-  "renovations": {
-    icon: HardHat,
-    title: "Renovations",
-    tagline: "Old Bones, New Life",
-    description:
-      "We breathe new life into aging properties — whether a full-gut renovation, a kitchen and bathroom refresh, or an energy-efficiency upgrade. Our renovation specialists respect the original character while modernising every inch.",
-    image: null,
-    color: "from-[hsl(220,60%,14%)] via-[hsl(220,55%,20%)] to-[hsl(220,50%,28%)]",
-    highlights: [
-      "Full-gut and partial renovations",
-      "Kitchen & bathroom remodels",
-      "Structural changes & extensions",
-      "Energy efficiency upgrades (insulation, windows)",
-      "Heritage & period property specialists",
-      "Minimal disruption scheduling",
-    ],
-    process: [
-      { step: "01", title: "Survey & Assessment", desc: "Thorough condition survey to understand the building's existing structure and services." },
-      { step: "02", title: "Design & Planning",   desc: "Renovation design, material selection, and where required, planning applications." },
-      { step: "03", title: "Demolition & Build",  desc: "Controlled strip-out followed by high-quality build works." },
-      { step: "04", title: "Finishing & Reveal",  desc: "Premium finishing and a stunning reveal — minimal mess, maximum impact." },
-    ],
-    stats: [
-      { value: "180+", label: "Renovations Done" },
-      { value: "40%",  label: "Avg. Value Added" },
-      { value: "8wk",  label: "Avg. Turnaround" },
-      { value: "4.8★", label: "Client Rating" },
-    ],
-  },
+  process: { step: string; title: string; desc: string; order: number }[];
+  stats: { value: string; label: string; order: number }[];
 };
 
-export default function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+// ── Component ─────────────────────────────────────────────────────────────────
+export default function ServiceDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = use(params);
-  const service = servicesData[slug];
+
+  const [service, setService] = useState<Service | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFoundState, setNotFoundState] = useState(false);
+
+  useEffect(() => {
+    const fetchService = async () => {
+      try {
+        const res = await fetch(`/api/services/${slug}`);
+
+        if (res.status === 404) {
+          // Service-ඒකක් නැතිනම් notFound page
+          setNotFoundState(true);
+          return;
+        }
+
+        const data = await res.json();
+        setService(data.data?.service ?? null);
+      } catch {
+        setNotFoundState(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchService();
+  }, [slug]);
+
+  // notFound() — Next.js-ඒකේ built-in 404 page
+  if (notFoundState) notFound();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 size={32} className="animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
   if (!service) notFound();
 
-  const Icon = service.icon;
+  const Icon = ICON_MAP[service.iconName] ?? Home;
 
   return (
     <div className="min-h-screen bg-background">
+
       {/* Hero */}
       <div className={`relative h-[50vh] min-h-[340px] bg-gradient-to-br ${service.color} overflow-hidden`}>
         {service.image && (
           <>
-            <Image src={service.image} alt={service.title} fill className="object-cover opacity-30" />
+            {/* /api/files/ — file serving route */}
+            <Image src={`/api/files/${service.image}`} alt={service.title}
+              fill className="object-cover opacity-30" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           </>
         )}
-        {/* Decorative circles */}
         <div className="absolute -top-16 -right-16 w-80 h-80 rounded-full bg-white/5" />
         <div className="absolute -bottom-10 -left-10 w-60 h-60 rounded-full bg-white/5" />
 
@@ -242,8 +123,8 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
           </div>
           <div className="bg-secondary/40 rounded-2xl p-6 space-y-3">
             <h3 className="font-heading font-bold text-foreground text-base mb-1">What&apos;s Included</h3>
-            {service.highlights.map((h) => (
-              <div key={h} className="flex items-start gap-3">
+            {service.highlights.map((h, i) => (
+              <div key={i} className="flex items-start gap-3">
                 <CheckCircle size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
                 <span className="text-sm text-foreground">{h}</span>
               </div>
