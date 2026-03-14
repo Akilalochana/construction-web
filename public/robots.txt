@@ -1,9 +1,11 @@
+# *
 User-agent: *
 Allow: /
-
-# Block admin and API routes
 Disallow: /admin/
 Disallow: /api/
 
-# Sitemap
+# Host
+Host: https://sriranjanaconstruction.lk
+
+# Sitemaps
 Sitemap: https://sriranjanaconstruction.lk/sitemap.xml

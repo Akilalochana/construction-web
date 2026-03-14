@@ -74,7 +74,7 @@ export async function PUT(
     // ✅ Bug 1 Fix: Transaction use කරනවා
     // deleteMany + update ඔක්කොම එක atomic operation ඒකේ වෙනවා
     // ඕනෑම step-ඒකක් fail වුනොත් ඔක්කොම rollback — data loss නැහැ
-    const service = await prisma.$transaction(async (tx) => {
+    const service = await prisma.$transaction(async (tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0]) => {
 
       // Step 1: පරණ process records delete
       await tx.serviceProcess.deleteMany({
