@@ -153,7 +153,7 @@ export async function DELETE(
 
     // ✅ Bug 2 Fix: Transaction-ඒකෙන් manually cascade delete කරනවා
     // Prisma schema-ඒකේ onDelete: Cascade set නොකළොත් ද safe
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0]) => {
       // Child records මුලින් delete — parent delete කරන්න කලින්
       await tx.serviceProcess.deleteMany({ where: { serviceId } });
       await tx.serviceStat.deleteMany({ where: { serviceId } });
