@@ -84,6 +84,6 @@ export const config = {
   matcher: [
     "/api/admin/protected/:path*",
     "/sri-admin-2003/:path((?!login).*)",
-    "/sri-admin-2003/login",
+    "/sri-admin-2003",
   ],
 };

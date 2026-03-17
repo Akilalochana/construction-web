@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
 				});
 
 				if (res.ok) {
-					router.replace("/admin");
+					router.replace("/sri-admin-2003"); 
 					return;
 				}
 			} finally {
@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
 				return;
 			}
 
-			router.replace("/admin");
+			router.replace("/sri-admin-2003");
 		} catch {
 			setError("Network error occurred. Please try again.");
 		} finally {
