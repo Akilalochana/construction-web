@@ -71,88 +71,87 @@ function page() {
     <section id="about" className="bg-white">
 
       {/* ── HERO SPLIT ─────────────────────────────────────── */}
-      <div className="container mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-12 sm:pb-20">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-
-          {/* Left — Photo collage */}
-          <motion.div
-            className="relative h-[260px] sm:h-[380px] lg:h-[520px]"
-        
-            initial={{ opacity: shouldAnimate ? 0 : 1, x: shouldAnimate ? -30 : 0 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.7 }}
-          >
-            <div className="absolute top-0 left-0 w-[72%] h-[80%] rounded-2xl overflow-hidden shadow-2xl">
-              <Image src="/assets/modern-villa.jpg" alt="Modern Villa" fill className="object-cover" />
-            </div>
-            <div className="absolute bottom-0 right-0 w-[52%] h-[52%] rounded-2xl overflow-hidden shadow-xl border-4 border-white">
-              <Image src="/assets/apartment1.jpg" alt="Apartment" fill className="object-cover" />
-            </div>
+        <div className="container mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-12 sm:pb-20">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+  
+            {/* Left — Photo collage */}
             <motion.div
-              className="absolute top-4 right-0 bg-white rounded-xl shadow-lg px-3 sm:px-5 py-2 sm:py-4 border border-border hidden sm:block"
-              // ✅ FIX 3: scale badge animations also safe
-              initial={{ opacity: shouldAnimate ? 0 : 1, scale: shouldAnimate ? 0.8 : 1 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              className="relative h-[260px] sm:h-[380px] lg:h-[520px]"
+              // ✅ Pahala idan udata enna x wenuwata y damma
+              initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 50 : 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.1 }}
-              transition={{ delay: 0.5, duration: 0.4 }}
+              transition={{ duration: 0.7 }}
             >
-              <div className="font-heading text-2xl sm:text-3xl font-bold text-primary">15+</div>
-              <div className="text-muted-foreground text-xs mt-0.5">Years of Excellence</div>
+              <div className="absolute top-0 left-0 w-[72%] h-[80%] rounded-2xl overflow-hidden shadow-2xl">
+                <Image src="/assets/modern-villa.jpg" alt="Modern Villa" fill className="object-cover" />
+              </div>
+              <div className="absolute bottom-0 right-0 w-[52%] h-[52%] rounded-2xl overflow-hidden shadow-xl border-4 border-white">
+                <Image src="/assets/apartment1.jpg" alt="Apartment" fill className="object-cover" />
+              </div>
+              <motion.div
+                className="absolute top-4 right-0 bg-white rounded-xl shadow-lg px-3 sm:px-5 py-2 sm:py-4 border border-border hidden sm:block"
+                initial={{ opacity: shouldAnimate ? 0 : 1, scale: shouldAnimate ? 0.8 : 1 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ delay: 0.5, duration: 0.4 }}
+              >
+                <div className="font-heading text-2xl sm:text-3xl font-bold text-primary">15+</div>
+                <div className="text-muted-foreground text-xs mt-0.5">Years of Excellence</div>
+              </motion.div>
+              <motion.div
+                className="absolute bottom-[54%] left-[68%] bg-accent rounded-xl shadow-lg px-3 sm:px-5 py-2 sm:py-4 hidden sm:block"
+                initial={{ opacity: shouldAnimate ? 0 : 1, scale: shouldAnimate ? 0.8 : 1 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ delay: 0.65, duration: 0.4 }}
+              >
+                <div className="font-heading text-2xl sm:text-3xl font-bold text-accent-foreground">200+</div>
+                <div className="text-accent-foreground/80 text-xs mt-0.5">Projects Delivered</div>
+              </motion.div>
+              <div className="absolute top-[42%] left-[70%] w-4 h-4 rounded-full bg-accent opacity-80 hidden sm:block" />
             </motion.div>
+  
+            {/* Right — Content */}
             <motion.div
-              className="absolute bottom-[54%] left-[68%] bg-accent rounded-xl shadow-lg px-3 sm:px-5 py-2 sm:py-4 hidden sm:block"
-              initial={{ opacity: shouldAnimate ? 0 : 1, scale: shouldAnimate ? 0.8 : 1 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              // ✅ Pahala idan udata enna x wenuwata y damma
+              initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 50 : 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.1 }}
-              transition={{ delay: 0.65, duration: 0.4 }}
+              transition={{ duration: 0.7 }}
             >
-              <div className="font-heading text-2xl sm:text-3xl font-bold text-accent-foreground">200+</div>
-              <div className="text-accent-foreground/80 text-xs mt-0.5">Projects Delivered</div>
+              <p className="text-accent font-semibold tracking-widest uppercase text-sm mb-3">Who We Are</p>
+              <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground leading-tight mb-6">
+                Building Dreams <br />
+                <span className="text-accent">Since 2009</span>
+              </h2>
+              <p className="text-muted-foreground leading-relaxed mb-6 text-[15px]">
+                BuildCraft is a full-service construction company with over 15 years of proven experience. From turnkey residential builds to complex commercial renovations, we bring precision, craftsmanship, and integrity to every project.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {["Licensed & fully insured contractors", "End-to-end project management", "Transparent pricing, no hidden costs", "On-time delivery guarantee"].map((point) => (
+                  <li key={point} className="flex items-center gap-3 text-foreground text-sm">
+                    <CheckCircle2 size={18} className="text-accent shrink-0" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+              <div className="flex gap-6 flex-wrap">
+                {milestones.map((m) => (
+                  <div key={m.label} className="flex items-center gap-2">
+                    <div className="w-9 h-9 bg-accent/10 rounded-lg flex items-center justify-center">
+                      <m.icon size={18} className="text-accent" />
+                    </div>
+                    <div>
+                      <div className="font-heading font-bold text-foreground text-sm">{m.year}</div>
+                      <div className="text-muted-foreground text-xs">{m.label}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </motion.div>
-            <div className="absolute top-[42%] left-[70%] w-4 h-4 rounded-full bg-accent opacity-80 hidden sm:block" />
-          </motion.div>
-
-          {/* Right — Content */}
-          <motion.div
-            // ✅ FIX 4: x: 50 → 30, shouldAnimate check
-            initial={{ opacity: shouldAnimate ? 0 : 1, x: shouldAnimate ? 30 : 0 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.7 }}
-          >
-            <p className="text-accent font-semibold tracking-widest uppercase text-sm mb-3">Who We Are</p>
-            <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-foreground leading-tight mb-6">
-              Building Dreams <br />
-              <span className="text-accent">Since 2009</span>
-            </h2>
-            <p className="text-muted-foreground leading-relaxed mb-6 text-[15px]">
-              BuildCraft is a full-service construction company with over 15 years of proven experience. From turnkey residential builds to complex commercial renovations, we bring precision, craftsmanship, and integrity to every project.
-            </p>
-            <ul className="space-y-3 mb-8">
-              {["Licensed & fully insured contractors", "End-to-end project management", "Transparent pricing, no hidden costs", "On-time delivery guarantee"].map((point) => (
-                <li key={point} className="flex items-center gap-3 text-foreground text-sm">
-                  <CheckCircle2 size={18} className="text-accent shrink-0" />
-                  {point}
-                </li>
-              ))}
-            </ul>
-            <div className="flex gap-6 flex-wrap">
-              {milestones.map((m) => (
-                <div key={m.label} className="flex items-center gap-2">
-                  <div className="w-9 h-9 bg-accent/10 rounded-lg flex items-center justify-center">
-                    <m.icon size={18} className="text-accent" />
-                  </div>
-                  <div>
-                    <div className="font-heading font-bold text-foreground text-sm">{m.year}</div>
-                    <div className="text-muted-foreground text-xs">{m.label}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+          </div>
         </div>
-      </div>
 
       {/* ── VALUES ─────────────────────────────────────────── */}
       <div className="bg-[hsl(215,20%,97%)] py-20">

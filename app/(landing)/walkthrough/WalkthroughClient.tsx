@@ -14,7 +14,7 @@ type Room = {
   roomKey: string;
   name: string;
   description: string;
-  image: string;   // "uploads/walkthrough/xxx.jpg"
+  image: string;   
   order: number;
 };
 

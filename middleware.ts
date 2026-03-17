@@ -14,8 +14,8 @@ const authRoutes: AuthRoute[] = [
     unauthRedirect: "",
   },
   {
-    startWith: "/admin",
-    unauthRedirect: "/admin/login",
+    startWith: "/sri-admin-2003",
+    unauthRedirect: "/sri-admin-2003/login",
   },
 ];
 
@@ -83,7 +83,7 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/api/admin/protected/:path*",
-    "/admin/:path((?!login).*)",
-    "/admin",
+    "/sri-admin-2003/:path((?!login).*)",
+    "/sri-admin-2003/login",
   ],
 };

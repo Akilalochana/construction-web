@@ -20,14 +20,14 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/projects", label: "Projects", icon: FolderKanban },
-  { href: "/admin/services", label: "Services", icon: Wrench },
-  { href: "/admin/before-after", label: "Before & After", icon: ImageIcon },
-  { href: "/admin/walkthrough", label: "360° Walkthrough", icon: View },
-  { href: "/admin/team", label: "Team", icon: Users },
-  { href: "/admin/reviews", label: "Reviews", icon: Star },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/sri-admin-2003", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/sri-admin-2003/projects", label: "Projects", icon: FolderKanban },
+  { href: "/sri-admin-2003/services", label: "Services", icon: Wrench },
+  { href: "/sri-admin-2003/before-after", label: "Before & After", icon: ImageIcon },
+  { href: "/sri-admin-2003/walkthrough", label: "360° Walkthrough", icon: View },
+  { href: "/sri-admin-2003/team", label: "Team", icon: Users },
+  { href: "/sri-admin-2003/reviews", label: "Reviews", icon: Star },
+  { href: "/sri-admin-2003/settings", label: "Settings", icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -42,7 +42,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         credentials: "include",
       });
     } finally {
-      window.location.href = "/admin/login";
+      window.location.href = "/sri-admin-2003/login";
     }
   };
 
