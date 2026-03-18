@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     description: "Professional construction services with 15+ years of experience.",
   },
   verification: {
-    google: "your-google-site-verification-code", // Replace with actual code
+  google: "ChRPXct7US1_cp5-IpmxlekwwVx9_H7j3reUmvpKkLo",
   },
    other: {
     "geo.region":    "LK-7",
