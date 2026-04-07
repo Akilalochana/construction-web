@@ -88,7 +88,7 @@ function ServicesPageClient() {
 
                   
                   <Image
-                    src={featured.image ? `/api/files/${featured.image}` : "/assets/hero.jpg"}
+                    src={featured.image ? `/api/files/${featured.image}` : "/assets/market-anuradhapura.jpg"}
                     alt={featured.title}
                     fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
@@ -128,7 +128,7 @@ function ServicesPageClient() {
 
                   
                   <Image
-                    src={service.image ? `/api/files/${service.image}` : "/assets/hero.jpg"}
+                    src={service.image ? `/api/files/${service.image}` : "/assets/gewal55.jpg"}
                     alt={service.title}
                     fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
@@ -160,7 +160,7 @@ function ServicesPageClient() {
 
                   
                   <Image
-                    src={service.image ? `/api/files/${service.image}` : "/assets/hero.jpg"}
+                    src={service.image ? `/api/files/${service.image}` : "/assets/kada30-anuradhapura.jpg"}
                     alt={service.title}
                     fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
