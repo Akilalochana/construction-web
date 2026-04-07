@@ -28,11 +28,16 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.sriranjanaconstruction.lk"), // 🔥 CHANGE THIS
+  metadataBase: new URL("https://www.sriranjanaconstruction.lk"), 
 
   title: {
     default: "Sri Ranjana Construction | Construction Company in Anuradhapura",
     template: "%s | Sri Ranjana Construction",
+  },
+
+   icons: {
+    icon: "/logo-white.svg",  
+    apple: "/logo-white.svg", 
   },
 
   description:
