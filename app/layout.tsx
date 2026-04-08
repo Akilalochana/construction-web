@@ -35,9 +35,12 @@ export const metadata: Metadata = {
     template: "%s | Sri Ranjana Construction",
   },
 
-   icons: {
-    icon: "/logo-white.svg",  
-    apple: "/logo-white.svg", 
+  icons: {
+    icon: [
+      { url: "/icon.png" },
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/icon.png", 
   },
 
   description:
